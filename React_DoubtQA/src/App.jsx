@@ -1,12 +1,25 @@
-import React from 'react'
-import Header from './Header'
+import React from "react";
+import { useEffect,useState } from "react";
 
-const App = () => {
+function App() {
+
+  const [count, setCount] = useState(0);
+
+  console.log("Render", count);
+
+  useEffect(() => {
+    console.log("Effect A", count);
+  }, []);
+
+  useEffect(() => {
+    console.log("Effect B", count);
+  }, [count]);
+
   return (
-    <Header>
-      <h1>hello</h1>
-    </Header>
-  )
+    <button onClick={() => setCount(count + 1)}>
+      click - {count}
+    </button>
+  );
 }
 
-export default App
+export default App;
