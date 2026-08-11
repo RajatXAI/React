@@ -9,6 +9,8 @@ const Register = ({ setToggle, setUsers }) => {
     url: ""
   });
 
+  console.log(formData)
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({...formData, [name]:value});
@@ -16,13 +18,13 @@ const Register = ({ setToggle, setUsers }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setUsers((prev) => [...prev, formData]);
+    setUsers( prev => [...prev, formData]);
     setFormData({
       username: "",
       email: "",
-      password: "",
+      password: "", 
       url: ""
-    });
+    }); // Reset the form after submission, jese hi form submit ho jaye to form ke andar ka data reset ho jaye, aur empty ho jaye
   } 
 
   return (
@@ -31,7 +33,7 @@ const Register = ({ setToggle, setUsers }) => {
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           required
-          value={formData.username || ""}
+          value={formData.username || ""} // two way binding, isme value tag add ho jata hai or phir react ke pass control aa jata hai or yehi controlled component kehlata hai, isme value tag ke andar formData.username ka value aa jata hai, or jab bhi user input deta hai to handleChange function call hota hai, or formData ke andar ka value update ho jata hai, or yehi two way binding kehlata hai
           name="username"
           onChange={handleChange}
           className="p-2 border border-gray-400 rounded"
@@ -40,7 +42,7 @@ const Register = ({ setToggle, setUsers }) => {
         />
         <input
           required
-          value={formData.email || ""}
+          value={formData.email || ""} 
           name="email"
           onChange={handleChange}
           className="p-2 border border-gray-400 rounded"
@@ -83,3 +85,5 @@ const Register = ({ setToggle, setUsers }) => {
 };
 
 export default Register;
+
+// State Lifting Up ka concept yaha aase pura ho raha hai jo user hai voh ish register form se set karke APP me bheja ja raha hai or APP ushi user ko userCard ko bhej raha raha hai or props hamesa parent-child relation me hote hai isliye setUser APP ko diya or register se data leke Card me bhej diya 

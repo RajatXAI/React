@@ -1,6 +1,7 @@
-import React from 'react'
+// import React from 'react'
 
-const Usercard = ({user}) => {
+
+const Usercard = ({user, deleteCard, id}) => {
   return (
     <div className='userCard flex flex-col gap-4 justify-center p-4 border-gray-400 border rounded bg-white'>
       <div className="userCard__img  w-50 h-50 rounded overflow-hidden">
@@ -10,7 +11,7 @@ const Usercard = ({user}) => {
           <h1>{user.username}</h1>
           <p>{user.email}</p>
         </div>
-        <button className='p-2 text-white bg-red-500 rounded-xl cursor-pointer' >Delete</button>
+        <button onClick={()=> deleteCard(id)} className='p-2 text-white bg-red-500 rounded-xl cursor-pointer' >Delete</button>
     </div>
   )
 }
