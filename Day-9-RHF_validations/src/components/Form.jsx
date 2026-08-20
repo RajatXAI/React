@@ -1,16 +1,11 @@
 import { useForm } from "react-hook-form";
 
-const Form = ({
-  setUsers,
-  setToggle,
-  users,
-  editUser,
-  setEditUser,
-}) => {
+const Form = ({ setUsers, setToggle, users, editUser, setEditUser }) => {
   const {
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors },
   } = useForm({
     mode: "onChange",
@@ -26,14 +21,31 @@ const Form = ({
           },
   });
 
-  const formSubmit = (data) => {
+  const formSubmit = async (data) => {
+    const imageUrl = data.image.trim();
+    const imageLoads = await new Promise((resolve) => {
+      const image = new Image();
+      image.onload = () => resolve(true);
+      image.onerror = () => resolve(false);
+      image.src = imageUrl;
+    });
+
+    if (!imageLoads) {
+      setError("image", {
+        type: "validate",
+        message:
+          "Direct public image URL enter karein (images.unsplash.com URL).",
+      });
+      return;
+    }
+
+    const userData = { ...data, image: imageUrl };
+
     if (editUser === null) {
-      setUsers((prev) => [...prev, data]);
+      setUsers((prev) => [...prev, userData]);
     } else {
       setUsers((prev) =>
-        prev.map((user, index) =>
-          index === editUser ? data : user
-        )
+        prev.map((user, index) => (index === editUser ? userData : user)),
       );
     }
 
@@ -44,7 +56,6 @@ const Form = ({
 
   return (
     <div className="w-full max-w-md">
-
       {/* Form Header */}
       <div className="mb-5 text-center">
         <p className="text-sm font-medium text-blue-400">
@@ -67,12 +78,9 @@ const Form = ({
         onSubmit={handleSubmit(formSubmit)}
         className="flex flex-col gap-5 rounded-2xl border border-gray-700/70 bg-gray-800/80 p-6 shadow-2xl shadow-black/30 backdrop-blur-md"
       >
-
         {/* Name */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-200">
-            Name
-          </label>
+          <label className="text-sm font-medium text-gray-200">Name</label>
 
           <input
             {...register("name", {
@@ -88,17 +96,13 @@ const Form = ({
           />
 
           {errors.name && (
-            <p className="text-xs text-red-400">
-              {errors.name.message}
-            </p>
+            <p className="text-xs text-red-400">{errors.name.message}</p>
           )}
         </div>
 
         {/* Email */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-200">
-            Email
-          </label>
+          <label className="text-sm font-medium text-gray-200">Email</label>
 
           <input
             {...register("email", {
@@ -119,17 +123,13 @@ const Form = ({
           />
 
           {errors.email && (
-            <p className="text-xs text-red-400">
-              {errors.email.message}
-            </p>
+            <p className="text-xs text-red-400">{errors.email.message}</p>
           )}
         </div>
 
         {/* Mobile */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-200">
-            Mobile
-          </label>
+          <label className="text-sm font-medium text-gray-200">Mobile</label>
 
           <input
             {...register("mobile", {
@@ -155,9 +155,7 @@ const Form = ({
           />
 
           {errors.mobile && (
-            <p className="text-xs text-red-400">
-              {errors.mobile.message}
-            </p>
+            <p className="text-xs text-red-400">{errors.mobile.message}</p>
           )}
         </div>
 
@@ -181,9 +179,7 @@ const Form = ({
           />
 
           {errors.image && (
-            <p className="text-xs text-red-400">
-              {errors.image.message}
-            </p>
+            <p className="text-xs text-red-400">{errors.image.message}</p>
           )}
         </div>
 
@@ -194,7 +190,6 @@ const Form = ({
         >
           {editUser === null ? "Add User" : "Update User"}
         </button>
-
       </form>
     </div>
   );
