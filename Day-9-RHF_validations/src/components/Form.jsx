@@ -1,12 +1,13 @@
 import { useForm } from "react-hook-form";
 
-const Form = ({
-  setUsers,
-  setToggle,
-  users,
-  editUser,
-  setEditUser,
-}) => {
+const Form = ({ setUsers, setToggle, users, editUser, setEditUser }) => {
+  const emptyUser = {
+    name: "",
+    email: "",
+    mobile: "",
+    image: "",
+  };
+
   const {
     register,
     handleSubmit,
@@ -17,23 +18,22 @@ const Form = ({
 
     defaultValues:
       editUser !== null
-        ? users[editUser]
-        : {
-            name: "",
-            email: "",
-            mobile: "",
-            image: "",
-          },
+        ? (users.find((user) => user.id === editUser) ?? emptyUser)
+        : emptyUser,
   });
 
   const formSubmit = (data) => {
+    // CREATE USER
     if (editUser === null) {
-      setUsers((prev) => [...prev, data]);
-    } else {
-      setUsers((prev) =>
-        prev.map((user, index) =>
-          index === editUser ? data : user
-        )
+      setUsers([...users, { id: crypto.randomUUID(), ...data  }]);
+    }
+
+    // UPDATE USER
+    else {
+      setUsers(
+        users.map((user) =>
+          user.id === editUser ? { ...data, id: editUser } : user,
+        ),
       );
     }
 
@@ -42,9 +42,15 @@ const Form = ({
     setToggle(true);
   };
 
+  const inp = (err) =>
+    `w-full rounded-lg border bg-gray-900/70 px-3 py-2.5 text-sm text-white outline-none transition placeholder:text-gray-500 ${
+      err
+        ? "border-red-500 focus:border-red-500"
+        : "border-gray-700 focus:border-blue-500"
+    }`;
+
   return (
     <div className="w-full max-w-md">
-
       {/* Form Header */}
       <div className="mb-5 text-center">
         <p className="text-sm font-medium text-blue-400">
@@ -65,12 +71,12 @@ const Form = ({
       {/* Form Card */}
       <form
         onSubmit={handleSubmit(formSubmit)}
+        autoComplete="on"
         className="flex flex-col gap-5 rounded-2xl border border-gray-700/70 bg-gray-800/80 p-6 shadow-2xl shadow-black/30 backdrop-blur-md"
       >
-
         {/* Name */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-200">
+          <label htmlFor="name" className="text-sm font-medium text-gray-200">
             Name
           </label>
 
@@ -78,25 +84,21 @@ const Form = ({
             {...register("name", {
               required: "Name is required",
             })}
-            className={`w-full rounded-lg border bg-gray-900/70 px-3 py-2.5 text-sm text-white outline-none transition placeholder:text-gray-500 ${
-              errors.name
-                ? "border-red-500 focus:border-red-500"
-                : "border-gray-700 focus:border-blue-500"
-            }`}
+            id="name"
+            autoComplete="name"
+            className={inp(errors.name)}
             type="text"
             placeholder="Enter user name"
           />
 
           {errors.name && (
-            <p className="text-xs text-red-400">
-              {errors.name.message}
-            </p>
+            <p className="text-xs text-red-400">{errors.name.message}</p>
           )}
         </div>
 
         {/* Email */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-200">
+          <label htmlFor="email" className="text-sm font-medium text-gray-200">
             Email
           </label>
 
@@ -109,25 +111,21 @@ const Form = ({
                 message: "Please enter a valid email",
               },
             })}
-            className={`w-full rounded-lg border bg-gray-900/70 px-3 py-2.5 text-sm text-white outline-none transition placeholder:text-gray-500 ${
-              errors.email
-                ? "border-red-500 focus:border-red-500"
-                : "border-gray-700 focus:border-blue-500"
-            }`}
+            id="email"
+            autoComplete="email"
+            className={inp(errors.email)}
             type="email"
             placeholder="Enter email address"
           />
 
           {errors.email && (
-            <p className="text-xs text-red-400">
-              {errors.email.message}
-            </p>
+            <p className="text-xs text-red-400">{errors.email.message}</p>
           )}
         </div>
 
         {/* Mobile */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-200">
+          <label htmlFor="mobile" className="text-sm font-medium text-gray-200">
             Mobile
           </label>
 
@@ -144,26 +142,27 @@ const Form = ({
                 value: 10,
                 message: "Maximum 10 digits are required",
               },
+
+              pattern: {
+                value: /^[0-9]+$/,
+                message: "Mobile number must contain only digits",
+              },
             })}
-            className={`w-full rounded-lg border bg-gray-900/70 px-3 py-2.5 text-sm text-white outline-none transition placeholder:text-gray-500 ${
-              errors.mobile
-                ? "border-red-500 focus:border-red-500"
-                : "border-gray-700 focus:border-blue-500"
-            }`}
+            id="mobile"
+            autoComplete="tel"
+            className={inp(errors.mobile)}
             type="tel"
             placeholder="Enter mobile number"
           />
 
           {errors.mobile && (
-            <p className="text-xs text-red-400">
-              {errors.mobile.message}
-            </p>
+            <p className="text-xs text-red-400">{errors.mobile.message}</p>
           )}
         </div>
 
         {/* Image */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-200">
+          <label htmlFor="image" className="text-sm font-medium text-gray-200">
             Profile Image
           </label>
 
@@ -171,30 +170,25 @@ const Form = ({
             {...register("image", {
               required: "Image URL is required",
             })}
-            className={`w-full rounded-lg border bg-gray-900/70 px-3 py-2.5 text-sm text-white outline-none transition placeholder:text-gray-500 ${
-              errors.image
-                ? "border-red-500 focus:border-red-500"
-                : "border-gray-700 focus:border-blue-500"
-            }`}
+            id="image"
+            autoComplete="off"
+            className={inp(errors.image)}
             type="url"
             placeholder="Paste image URL"
           />
 
           {errors.image && (
-            <p className="text-xs text-red-400">
-              {errors.image.message}
-            </p>
+            <p className="text-xs text-red-400">{errors.image.message}</p>
           )}
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          className="mt-1 w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-500 active:scale-[0.98] cursor-pointer"
+          className="mt-1 w-full cursor-pointer rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-500 active:scale-[0.98]"
         >
           {editUser === null ? "Add User" : "Update User"}
         </button>
-
       </form>
     </div>
   );

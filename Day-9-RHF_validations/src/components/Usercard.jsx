@@ -7,8 +7,6 @@ const Usercard = ({ user, deleteUser, updateUser, id }) => {
           className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
           src={user.image}
           alt={user.name}
-          onLoad={() => console.log("IMAGE LOADED")}
-          onError={() => console.log("IMAGE ERROR", user.image)}
         />
 
         {/* Image Overlay */}
