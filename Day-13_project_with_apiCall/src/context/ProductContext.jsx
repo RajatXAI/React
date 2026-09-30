@@ -20,7 +20,7 @@ const ContextProvider = ({ children }) => {
       removeFromCart(productId);
       return;
     }
-    
+
     setCartItems((prevItems) =>
       prevItems.map((item) =>
         item.id === productId ? { ...item, quantity: item.quantity - 1 } : item,

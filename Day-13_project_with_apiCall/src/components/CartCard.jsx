@@ -1,10 +1,11 @@
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useContext } from "react";
-import { ProductStore } from "../context/ProductStore"
+import { ProductStore } from "../context/ProductStore";
 
 const CartCard = ({ product }) => {
+  const { incrementQuantity, decrementQuantity, removeFromCart } =
+    useContext(ProductStore);
 
-  const { incrementQuantity, decrementQuantity, removeFromCart } = useContext(ProductStore);
   return (
     <div className="group flex flex-col gap-5 rounded-lg border border-[#dfe8e3] bg-white p-4 shadow-[0_2px_10px_rgba(32,53,50,0.04)] transition duration-200 hover:border-[#c6d8cf] hover:shadow-[0_8px_24px_rgba(32,53,50,0.08)] sm:p-5 md:flex-row">
       {/* Product Image */}
@@ -34,13 +35,18 @@ const CartCard = ({ product }) => {
 
         <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-[#edf1ee] pt-4">
           {/* Price */}
-          <h3 className="text-2xl font-semibold text-[#28594f]">
-            ${product.price}
-          </h3>
+          <div>
+            <h3 className="text-2xl font-semibold text-[#28594f]">
+              ${(product.price * product.quantity).toFixed(2)}
+            </h3>
+            <p className="mt-1 text-xs text-[#71807b]">
+              ${product.price.toFixed(2)} each
+            </p>
+          </div>
 
           {/* Quantity */}
           <div className="flex h-10 items-center rounded-md border border-[#d9e2df] bg-[#f8faf9]">
-            <button 
+            <button
               className="grid size-9 place-items-center rounded-l-md text-[#40534e] transition-colors hover:bg-[#e8f1ec] focus-visible:outline-2 focus-visible:outline-[#39766c]"
               onClick={() => decrementQuantity(product.id)}
             >
@@ -51,7 +57,7 @@ const CartCard = ({ product }) => {
               {product.quantity}
             </span>
 
-            <button 
+            <button
               className="grid size-9 place-items-center rounded-r-md text-[#40534e] transition-colors hover:bg-[#e8f1ec] focus-visible:outline-2 focus-visible:outline-[#39766c]"
               onClick={() => incrementQuantity(product.id)}
             >
@@ -60,7 +66,7 @@ const CartCard = ({ product }) => {
           </div>
 
           {/* Remove */}
-          <button 
+          <button
             className="flex items-center gap-2 rounded-md border border-[#ecd8d3] bg-[#fff9f7] px-3 py-2 text-sm font-medium text-[#a34d3d] transition-colors hover:border-[#dfb9af] hover:bg-[#fff1ed] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bd6958]"
             onClick={() => removeFromCart(product.id)}
           >
