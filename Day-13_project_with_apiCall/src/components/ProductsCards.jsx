@@ -19,7 +19,7 @@ const ProductsCards = ({ product, isInCart }) => {
     // Show toast notification (pop-up)
     toast.custom(
       (t) => (
-        <div className="flex w-[360px] items-center gap-3 rounded-2xl border border-[#dce8e3] bg-white p-3 shadow-[0_12px_35px_rgba(32,53,50,0.14)]">
+        <div className="flex w-90 items-center gap-3 rounded-2xl border border-[#dce8e3] bg-white p-3 shadow-[0_12px_35px_rgba(32,53,50,0.14)]">
           {/* Product Image */}
           <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#f4f8f6]">
             <img
